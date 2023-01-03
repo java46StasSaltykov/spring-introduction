@@ -1,25 +1,15 @@
 package telran.spring.service;
 
 import org.springframework.stereotype.Service;
-
-import telran.view.InputOutput;
+import telran.spring.dto.*;
 
 @Service("sms")
 public class SmsSender implements Sender {
 
 	@Override
-	public void send(InputOutput io, String text) {
-		String phoneNumber = io.readPredicate("Enter phone number", "Wrong phone number",
-				SmsSender::phoneNumberPredicate);
-		System.out.printf("text '%s' has been sent to %s\n", text, phoneNumber);
+	public String send(Message message) {
+		SmsMessage smsMessage = (SmsMessage) message;
+		return String.format("text '%s' has been sent to %s\n", 
+				smsMessage.text, smsMessage.phone);
 	}
-
-	static boolean phoneNumberPredicate(String phone) {
-		return phone.matches(phoneNumberRegEx());
-	}
-
-	private static String phoneNumberRegEx() {
-		return "(\\+972\\s*-?|0)(5\\d|7[2-7])(-?\\d){7}";
-	}
-
 }
