@@ -9,7 +9,7 @@ import telran.spring.calculator.dto.OperationData;
 public class DatesSimpleOperation implements Operation {
 
 	@Override
-	public String execute(OperationData data) {
+	public String execute(OperationData data) throws ClassCastException {
 		String res = "";
 		DateDaysOperationData dateData = (DateDaysOperationData) data;
 		try {

@@ -2,10 +2,10 @@ package telran.spring.calculator.controller;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import jakarta.annotation.PostConstruct;
+import jakarta.validation.Valid;
 import telran.spring.calculator.dto.OperationData;
 import telran.spring.calculator.service.Operation;
 
@@ -18,8 +18,7 @@ public class CalculatorController {
 	
 	@Value("${app.operation.wrong.name: Wrong name. }")
 	String wrongNameMessage;
-	@Value("${app.operation.wrong.arithmetic: Wrong operation. }")
-	String wrongArithmeticOpMessage;
+
 	@Value("${app.operation.mismatch: Operation mismatch. }")
 	String mismatchMessage;
 
@@ -29,23 +28,26 @@ public class CalculatorController {
 	}
 
 	@PostMapping
-	String getOperationResult(@RequestBody OperationData data) {
-		Operation operationService = operations.get(data.operationName);
-		String res = operationService != null ? 
-				operationService.execute(data) : 
-				String.format("Wrong operation name, should be one from %s", operations.keySet());
+	String getOperationResult(@RequestBody @Valid OperationData data) {
+		String res = "";
+		try {
+			Operation operationService = operations.get(data.operationName);
+			res = operationService != null ? operationService.execute(data) : wrongNameMessage;
+		} catch (ClassCastException e) {
+			res = mismatchMessage;
+		}
 		return res;
-
 	}
 
 	@GetMapping
 	Set<String> getAllOperationNames() {
-		return operationServices.stream().map(o -> o.getClass().getName()).collect(Collectors.toSet());
+		return operations.keySet();
 	}
 	
 	@PostConstruct
 	void displayOperations() {
-		operationServices.stream().forEach(o -> operations.put(o.getClass().getName(), o));
+		operations = operationServices.stream().collect(Collectors.toMap(o -> o.getClass().getSimpleName(), o -> o));
+
 	}
 
 }

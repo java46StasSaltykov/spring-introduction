@@ -2,6 +2,7 @@ package telran.spring.calculator.service;
 
 import java.util.*;
 import java.util.function.BiFunction;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import telran.spring.calculator.dto.*;
 
@@ -9,6 +10,9 @@ import telran.spring.calculator.dto.*;
 public class ArithmeticSimpleOperation implements Operation {
 	
 	private static Map<String, BiFunction<Double, Double, String>> operations;
+	
+	@Value("${app.operation.wrong.arithmetic: Wrong operation. }")
+	String wrongArithmeticOpMessage;
 	
 	static {
 		operations = new HashMap<>();
@@ -19,10 +23,10 @@ public class ArithmeticSimpleOperation implements Operation {
 	}
 
 	@Override
-	public String execute(OperationData data) {
+	public String execute(OperationData data) throws ClassCastException {
 		ArithmeticOperationData arithmeticData = (ArithmeticOperationData) data;
 		var function = operations.getOrDefault(data.additionalData,
-				(o1, o2) -> "Wrong arithmetic operation should be (*,/,+,-");
+				(o1, o2) -> wrongArithmeticOpMessage + " should be (*,/,+,-");
 		return function.apply(arithmeticData.operand1, arithmeticData.operand2);
 	}
 
