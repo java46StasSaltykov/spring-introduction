@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import telran.spring.calculator.dto.DateDaysOperationData;
 import telran.spring.calculator.dto.OperationData;
 
-@Service("dates-simple")
+@Service
 public class DatesSimpleOperation implements Operation {
 
 	@Override

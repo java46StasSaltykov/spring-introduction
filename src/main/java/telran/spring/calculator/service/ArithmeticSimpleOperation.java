@@ -5,7 +5,7 @@ import java.util.function.BiFunction;
 import org.springframework.stereotype.Service;
 import telran.spring.calculator.dto.*;
 
-@Service("arithmetic-simple")
+@Service
 public class ArithmeticSimpleOperation implements Operation {
 	
 	private static Map<String, BiFunction<Double, Double, String>> operations;
