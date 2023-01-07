@@ -1,21 +1,26 @@
 package telran.spring.calculator.service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-
 import org.springframework.stereotype.Service;
+import telran.spring.calculator.dto.DatesOperationData;
 import telran.spring.calculator.dto.OperationData;
 
-@Service("Dates between operation")
+@Service("dates-between")
 public class DatesBetweenOperation implements Operation {
 
 	@Override
 	public String execute(OperationData data) {
-		String[] dates = data.additionalData.split(" ");
-		LocalDateTime dateFrom = LocalDateTime.parse(dates[0]);
-		LocalDateTime dateTo = LocalDateTime.parse(dates[1]);
-		long res = ChronoUnit.DAYS.between(dateFrom, dateTo);
-		return Long.toString(res);
+		String res = "";
+		DatesOperationData datesData = (DatesOperationData) data;
+		try {
+			LocalDate dateFrom = LocalDate.parse(datesData.dateFrom);
+			LocalDate dateTo = LocalDate.parse(datesData.dateTo);
+			res = ChronoUnit.DAYS.between(dateFrom, dateTo) + "";
+		} catch (Exception e) {
+			res = "Wrong Date Format should be YYYY-MM-DD";
+		}
+		return res;
 	}
 
 }

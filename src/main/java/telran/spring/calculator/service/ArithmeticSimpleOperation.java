@@ -1,34 +1,29 @@
 package telran.spring.calculator.service;
 
+import java.util.*;
+import java.util.function.BiFunction;
 import org.springframework.stereotype.Service;
-import telran.spring.calculator.dto.OperationData;
+import telran.spring.calculator.dto.*;
 
-@Service("arithmetic operation")
+@Service("arithmetic-simple")
 public class ArithmeticSimpleOperation implements Operation {
+	
+	private static Map<String, BiFunction<Double, Double, String>> operations;
+	
+	static {
+		operations = new HashMap<>();
+		operations.put("*", (o1, o2) -> o1 * o2 + "");
+		operations.put("-", (o1, o2) -> o1 - o2 + "");
+		operations.put("+", (o1, o2) -> o1 + o2 + "");
+		operations.put("/", (o1, o2) -> o1 / o2 + "");
+	}
 
 	@Override
 	public String execute(OperationData data) {
-		double res = 0;
-		String[] operands = data.additionalData.split(" ");
-		double operand1 = Double.parseDouble(operands[0]);
-		double operand2 = Double.parseDouble(operands[2]);
-		switch (data.additionalData.charAt(1)) {
-		case '+':
-			res = operand1 + operand2;
-			break;
-		case '-':
-			res = operand1 - operand2;
-			break;
-		case '*':
-			res = operand1 * operand2;
-			break;
-		case '/':
-			res = operand1 / operand2;
-			break;
-		default:
-			break;
-		}
-		return Double.toString(res);
+		ArithmeticOperationData arithmeticData = (ArithmeticOperationData) data;
+		var function = operations.getOrDefault(data.additionalData,
+				(o1, o2) -> "Wrong arithmetic operation should be (*,/,+,-");
+		return function.apply(arithmeticData.operand1, arithmeticData.operand2);
 	}
 
 }
