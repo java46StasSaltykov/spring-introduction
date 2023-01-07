@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import telran.spring.dto.Message;
 import telran.spring.dto.*;
 
-@Service("TCP")
+@Service
 public class TcpSender implements Sender {
 
 	@Override

@@ -2,6 +2,6 @@ package telran.spring.dto;
 
 public class SmsMessage extends Message {
 	
-	public String phone;
+	public String phoneNumber;
 
 }
