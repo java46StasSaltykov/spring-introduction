@@ -7,13 +7,12 @@ import org.springframework.stereotype.Service;
 import telran.spring.calculator.dto.*;
 
 @Service
-public class ArithmeticSimpleOperation implements Operation {
+public class ArithmeticSimpleOperation extends AbstractOperation {
 	
 	private static Map<String, BiFunction<Double, Double, String>> operations;
-	
-	@Value("${app.operation.wrong.arithmetic: Wrong operation. }")
-	String wrongArithmeticOpMessage;
-	
+	@Value("${app.message.wrong.operation.arithmetic}")
+	String wrongOperation;
+
 	static {
 		operations = new HashMap<>();
 		operations.put("*", (o1, o2) -> o1 * o2 + "");
@@ -23,11 +22,21 @@ public class ArithmeticSimpleOperation implements Operation {
 	}
 
 	@Override
-	public String execute(OperationData data) throws ClassCastException {
-		ArithmeticOperationData arithmeticData = (ArithmeticOperationData) data;
-		var function = operations.getOrDefault(data.additionalData,
-				(o1, o2) -> wrongArithmeticOpMessage + " should be (*,/,+,-");
-		return function.apply(arithmeticData.operand1, arithmeticData.operand2);
+	public String execute(OperationData data) {
+		String res = "";
+		try {
+			ArithmeticOperationData arithmeticData = (ArithmeticOperationData) data;
+			var function = operations.getOrDefault(data.additionalData, (o1, o2) -> wrongOperation + " (*,/,+,-)");
+			res = function.apply(arithmeticData.operand1, arithmeticData.operand2);
+		} catch (ClassCastException e) {
+			res = wrongDtoMessage;
+		}
+		return res;
+	}
+
+	@Override
+	public String getOperationName() {
+		return "arithmetic-simple";
 	}
 
 }

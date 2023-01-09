@@ -12,42 +12,33 @@ import telran.spring.calculator.service.Operation;
 @RestController
 @RequestMapping("calculator")
 public class CalculatorController {
-	
-	List<Operation> operationServices;
-	Map<String, Operation> operations;
-	
-	@Value("${app.operation.wrong.name: Wrong name. }")
-	String wrongNameMessage;
+	List<Operation> operations;
+	Map<String, Operation> operationServices;
+	@Value("${app.message.wrong.operation.name}")
+	String wrongOperationMessage;
 
-	@Value("${app.operation.mismatch: Operation mismatch. }")
-	String mismatchMessage;
-
-	public CalculatorController(List<Operation> operationServices, Map<String, Operation> operations) {
-		this.operationServices = operationServices;
+	public CalculatorController(List<Operation> operations) {
 		this.operations = operations;
 	}
 
 	@PostMapping
 	String getOperationResult(@RequestBody @Valid OperationData data) {
-		String res = "";
-		try {
-			Operation operationService = operations.get(data.operationName);
-			res = operationService != null ? operationService.execute(data) : wrongNameMessage;
-		} catch (ClassCastException e) {
-			res = mismatchMessage;
-		}
+		Operation operationService = operationServices.get(data.operationName);
+		String res = operationService != null ? operationService.execute(data)
+				: String.format(wrongOperationMessage + " %s", operationServices.keySet());
 		return res;
+
 	}
 
 	@GetMapping
 	Set<String> getAllOperationNames() {
-		return operations.keySet();
+		return operationServices.keySet();
 	}
-	
-	@PostConstruct
-	void displayOperations() {
-		operations = operationServices.stream().collect(Collectors.toMap(o -> o.getClass().getSimpleName(), o -> o));
 
+	@PostConstruct
+	void createMapOperationsServices() {
+		operationServices = operations.stream()
+				.collect(Collectors.toMap(Operation::getOperationName, service -> service));
 	}
 
 }

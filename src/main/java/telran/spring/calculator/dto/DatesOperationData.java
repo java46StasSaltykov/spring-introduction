@@ -1,12 +1,13 @@
 package telran.spring.calculator.dto;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 public class DatesOperationData extends OperationData {
-	
-	@NotEmpty @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$")
+	@NotNull
+	@Pattern(regexp = OperationData.DATE_PATTERN)
 	public String dateFrom;
-	@NotEmpty @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$")
+	@NotNull
+	@Pattern(regexp = OperationData.DATE_PATTERN)
 	public String dateTo;
-
 }

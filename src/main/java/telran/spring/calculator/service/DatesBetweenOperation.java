@@ -7,20 +7,26 @@ import telran.spring.calculator.dto.DatesOperationData;
 import telran.spring.calculator.dto.OperationData;
 
 @Service
-public class DatesBetweenOperation implements Operation {
+public class DatesBetweenOperation extends AbstractOperation {
 
 	@Override
-	public String execute(OperationData data) throws ClassCastException {
+	public String execute(OperationData data) {
 		String res = "";
-		DatesOperationData datesData = (DatesOperationData) data;
 		try {
+			DatesOperationData datesData = (DatesOperationData) data;
+
 			LocalDate dateFrom = LocalDate.parse(datesData.dateFrom);
 			LocalDate dateTo = LocalDate.parse(datesData.dateTo);
 			res = ChronoUnit.DAYS.between(dateFrom, dateTo) + "";
-		} catch (Exception e) {
-			res = "Wrong Date Format should be YYYY-MM-DD";
+		} catch (ClassCastException e) {
+			res = wrongDtoMessage;
 		}
 		return res;
+	}
+
+	@Override
+	public String getOperationName() {
+		return "dates-between";
 	}
 
 }
