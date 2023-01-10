@@ -23,9 +23,7 @@ public class CalculatorAppl {
 				break;
 			}
 		}
-		
 		ctx.close();
-		
 	}
 
 	@PreDestroy

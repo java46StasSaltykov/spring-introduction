@@ -12,6 +12,7 @@ import telran.spring.calculator.service.Operation;
 @RestController
 @RequestMapping("calculator")
 public class CalculatorController {
+
 	List<Operation> operations;
 	Map<String, Operation> operationServices;
 	@Value("${app.message.wrong.operation.name}")
@@ -37,8 +38,7 @@ public class CalculatorController {
 
 	@PostConstruct
 	void createMapOperationsServices() {
-		operationServices = operations.stream()
-				.collect(Collectors.toMap(Operation::getOperationName, service -> service));
+		operationServices = operations.stream().collect(Collectors.toMap(Operation::getOperationName, service -> service));
 	}
 
 }
