@@ -2,6 +2,7 @@ package telran.spring.calculator.controller;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import jakarta.annotation.PostConstruct;
@@ -17,6 +18,7 @@ public class CalculatorController {
 	Map<String, Operation> operationServices;
 	@Value("${app.message.wrong.operation.name}")
 	String wrongOperationMessage;
+	static Logger LOG = LoggerFactory.getLogger(CalculatorController.class);
 
 	public CalculatorController(List<Operation> operations) {
 		this.operations = operations;
@@ -24,9 +26,15 @@ public class CalculatorController {
 
 	@PostMapping
 	String getOperationResult(@RequestBody @Valid OperationData data) {
+		String res = "";
 		Operation operationService = operationServices.get(data.operationName);
-		String res = operationService != null ? operationService.execute(data)
-				: String.format(wrongOperationMessage + " %s", operationServices.keySet());
+		if (operationService != null) {		
+			LOG.debug("recieved operation request {}", data.operationName);
+			res = operationService.execute(data);
+		} else {
+			res = String.format(wrongOperationMessage + " %s", operationServices.keySet());
+			LOG.error(wrongOperationMessage + operationServices.keySet());
+		}
 		return res;
 
 	}
@@ -39,6 +47,7 @@ public class CalculatorController {
 	@PostConstruct
 	void createMapOperationsServices() {
 		operationServices = operations.stream().collect(Collectors.toMap(Operation::getOperationName, service -> service));
+		LOG.info("application context is created with operations: {}", operationServices.keySet());
 	}
 
 }

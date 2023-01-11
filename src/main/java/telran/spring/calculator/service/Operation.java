@@ -1,5 +1,6 @@
 package telran.spring.calculator.service;
 
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Value;
 import telran.spring.calculator.dto.OperationData;
 
@@ -9,6 +10,8 @@ public interface Operation {
 
 	String getOperationName();
 
-	@Value("${app.message.wrong.dto.fileds}")
+	@Value("${app.message.wrong.dto.fields}")
 	String wrongDtoMessage = "";
+	
+	static Logger LOG = LoggerFactory.getLogger(Operation.class);
 }
