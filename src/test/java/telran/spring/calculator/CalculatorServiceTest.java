@@ -11,14 +11,14 @@ import telran.spring.calculator.service.*;
 
 @SpringBootTest
 class CalculatorServiceTest {
-	
+
 	@Autowired
 	ArithmeticSimpleOperation arithmeticSimpleOperation;
 	@Autowired
 	DatesBetweenOperation datesBetweenOperation;
 	@Autowired
 	DatesSimpleOperation datesSimpleOperation;
-	
+
 	@Test
 	void correctOperationsExecutionTest() {
 		ArithmeticOperationData arithmeticData = new ArithmeticOperationData();
@@ -26,24 +26,24 @@ class CalculatorServiceTest {
 		arithmeticData.additionalData = "+";
 		arithmeticData.operand1 = 5.0;
 		arithmeticData.operand2 = 5.0;
-		
+
 		DatesOperationData datesData = new DatesOperationData();
 		datesData.operationName = "dates-between";
 		datesData.additionalData = "";
 		datesData.dateTo = "2023-01-10";
 		datesData.dateFrom = "2023-01-01";
-		
+
 		DateDaysOperationData dateDaysData = new DateDaysOperationData();
 		dateDaysData.operationName = "dates-simple";
 		dateDaysData.additionalData = "before";
 		dateDaysData.date = "2023-01-10";
 		dateDaysData.days = 10;
-		
+
 		assertEquals(arithmeticSimpleOperation.execute(arithmeticData), "10.0");
 		assertEquals(datesBetweenOperation.execute(datesData), "9");
 		assertEquals(datesSimpleOperation.execute(dateDaysData), "2022-12-31");
 	}
-	
+
 	@Test
 	void operationsWrongExecutionTest() {
 		ArithmeticOperationData wrongArithmeticData = new ArithmeticOperationData();

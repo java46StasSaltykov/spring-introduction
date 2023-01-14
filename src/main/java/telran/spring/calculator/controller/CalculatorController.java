@@ -13,12 +13,11 @@ import telran.spring.calculator.service.Operation;
 @RestController
 @RequestMapping("calculator")
 public class CalculatorController {
-
+	static Logger LOG = LoggerFactory.getLogger(CalculatorController.class);
 	List<Operation> operations;
 	Map<String, Operation> operationServices;
 	@Value("${app.message.wrong.operation.name}")
 	String wrongOperationMessage;
-	static Logger LOG = LoggerFactory.getLogger(CalculatorController.class);
 
 	public CalculatorController(List<Operation> operations) {
 		this.operations = operations;
@@ -26,28 +25,29 @@ public class CalculatorController {
 
 	@PostMapping
 	String getOperationResult(@RequestBody @Valid OperationData data) {
-		String res = "";
+		LOG.debug("operation request with type: {}, additional data: {}," + " class of Operation data is {}",
+				data.operationName, data.additionalData, data.getClass().getSimpleName());
 		Operation operationService = operationServices.get(data.operationName);
-		if (operationService != null) {		
-			LOG.debug("recieved operation request {}", data.operationName);
-			res = operationService.execute(data);
-		} else {
-			res = String.format(wrongOperationMessage + " %s", operationServices.keySet());
-			LOG.error(wrongOperationMessage + operationServices.keySet());
+		if (operationService == null) {
+			LOG.error("operation {} is not implemented", data.operationName);
 		}
+		String res = operationService != null ? operationService.execute(data)
+				: String.format(wrongOperationMessage + " %s", operationServices.keySet());
 		return res;
 
 	}
 
 	@GetMapping
 	Set<String> getAllOperationNames() {
+		LOG.debug("request for getting operation names");
 		return operationServices.keySet();
 	}
 
 	@PostConstruct
 	void createMapOperationsServices() {
-		operationServices = operations.stream().collect(Collectors.toMap(Operation::getOperationName, service -> service));
-		LOG.info("application context is created with operations: {}", operationServices.keySet());
+		operationServices = operations.stream()
+				.collect(Collectors.toMap(Operation::getOperationName, service -> service));
+		LOG.info("the operation names are {}", operationServices.keySet());
 	}
 
 }

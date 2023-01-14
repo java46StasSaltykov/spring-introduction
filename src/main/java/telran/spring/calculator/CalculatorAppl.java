@@ -1,11 +1,9 @@
 package telran.spring.calculator;
 
 import java.util.Scanner;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-
 import jakarta.annotation.PreDestroy;
 
 @SpringBootApplication
@@ -23,7 +21,9 @@ public class CalculatorAppl {
 				break;
 			}
 		}
+
 		ctx.close();
+
 	}
 
 	@PreDestroy
